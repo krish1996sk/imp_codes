@@ -1,0 +1,68 @@
+/*
+ * Public API for the Netconf RPC services.
+ *
+ */
+
+/*
+ *  proto3 is recommended for use with LibJAPI and gRPC
+ */
+syntax = "proto3";
+
+/*
+ * This is part of the management package.
+ */
+package management;
+
+/*
+ * MGD Service Definitions
+ */
+service NetconfRpcApi {
+
+    /*
+     * It executes the operational command specified in
+     * ExecuteOpCommandRequest. This is a streaming api
+     */
+    rpc GetExecuteCommand (stream RPCRequest) returns
+    (stream RPCResponse) {}
+
+    rpc InitialHandShake (AuthRequest) returns
+    (AuthResponse) {}
+
+}
+
+message AuthRequest {
+    string message_req = 1;
+}
+
+message AuthResponse {
+    string message_res = 1;
+}
+
+message RPCRequest {
+
+    /*
+     * The request id corresponding to the request
+     */
+    uint64 request_id = 1;
+
+    /*
+     * Netconf RPC reply/ CLI command output
+     */
+    string message  = 3;
+}
+
+message RPCResponse {
+
+    /*
+     * The request id corresponding to the request
+     */
+    uint64 request_id = 1;
+
+    /*
+     * Input Command
+     */
+    oneof command {
+      string netconf_command = 2;
+      string cli_command = 3;
+    }
+}
